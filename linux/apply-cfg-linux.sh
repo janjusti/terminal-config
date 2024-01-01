@@ -4,7 +4,7 @@
 
 echo "Hello there! Welcome."
 
-mycfg_folder="$HOME/.myconfig"
+mycfg_folder="$HOME/.my-term-cfg"
 export XDG_CONFIG_HOME=$mycfg_folder
 
 distro=$(awk -F'=' '/^ID=/ { print tolower($2) }' /etc/*-release | tr -d '"')

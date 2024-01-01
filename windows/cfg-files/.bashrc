@@ -1,4 +1,4 @@
-mycfg_folder="$HOME/.myconfig"
+mycfg_folder="$HOME/.my-term-cfg"
 export PATH=$PATH:"$mycfg_folder/bin"
 export STARSHIP_CONFIG="$mycfg_folder/starship.toml"
 export LC_CTYPE=en_US.UTF-8

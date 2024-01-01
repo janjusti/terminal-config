@@ -1,5 +1,7 @@
 #!/bin/sh
 
+mycfg_folder="$HOME/.my-term-cfg"
+
 distro=$(awk -F'=' '/^ID=/ { print tolower($2) }' /etc/*-release | tr -d '"')
 echo "##### Hmmmmm... seems like you are using '$distro'..."
 case $distro in
@@ -17,7 +19,7 @@ case $distro in
 esac
 
 echo "Removing config files..."
-rm -rf $HOME/.myconfig/ $HOME/.cache/starship;
+rm -rf $mycfg_folder $HOME/.cache/starship;
 rm -f $HOME/.zshrc;
 [ -f $HOME/.zshrc.old ] && (echo "Restoring .zshrc file..." && mv $HOME/.zshrc.old $HOME/.zshrc);
 # echo "Uninstalling apps..."

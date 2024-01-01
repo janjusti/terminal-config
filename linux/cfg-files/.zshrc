@@ -1,5 +1,5 @@
 # Path to your oh-my-zsh installation.
-MYCFG_FOLDER="$HOME/.myconfig"
+MYCFG_FOLDER="$HOME/.my-term-cfg"
 export ZSH="$MYCFG_FOLDER/.oh-my-zsh"
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
 export STARSHIP_CONFIG="$MYCFG_FOLDER/starship.toml"

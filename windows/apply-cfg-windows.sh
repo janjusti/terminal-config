@@ -5,7 +5,7 @@
 
 echo "Hello there! Welcome."
 
-mycfg_folder="$HOME/.myconfig"
+mycfg_folder="$HOME/.my-term-cfg"
 export XDG_CONFIG_HOME=$mycfg_folder
 
 [ -f $HOME/.bashrc ] && (echo "##### Backing up config files..." && mv $HOME/.bashrc $HOME/.bashrc.old)
