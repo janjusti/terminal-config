@@ -56,7 +56,7 @@ mkdir -p $mycfg_folder
 )
 
 echo "##### Copying config files to '$mycfg_folder'..."
-path_to_script_folder=$PWD/$(dirname "$0");
+path_to_script_folder=$(dirname "$(realpath "$0")")
 cp -r "$path_to_script_folder/cfg-files/." "$mycfg_folder/"
 cp -r "$path_to_script_folder/../common/." "$mycfg_folder/"
 echo "##### Creating new .zshrc file..."

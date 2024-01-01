@@ -13,7 +13,7 @@ echo "##### Creating folder for config files..."
 mkdir -p $mycfg_folder/bin
 [ ! -f $mycfg_folder/bin/starship.exe ] && (echo "##### Installing starship..." && curl -sS https://starship.rs/install.sh | sh -s -- -b "$mycfg_folder/bin/" -f)
 echo "##### Copying config files to '$mycfg_folder'..."
-path_to_script_folder=$PWD/$(dirname "$0");
+path_to_script_folder=$(dirname "$(realpath "$0")");
 cp -r "$path_to_script_folder/cfg-files/." "$mycfg_folder/"
 cp -r "$path_to_script_folder/../common/." "$mycfg_folder/"
 echo "##### Creating new .bashrc file..."
