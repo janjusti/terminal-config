@@ -1,0 +1,66 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+add_newline = true
+format = """$time$username@$hostname${custom.docker-host} $sudo$shell \\[$directory\\] $cmd_duration [$all](dimmed)$character"""
+scan_timeout = 20
+command_timeout = 100
+
+[container]
+disabled = true
+
+[shell]
+format = """[\\($indicator\\)]($style)"""
+bash_indicator = """[bash](green)"""
+zsh_indicator = """[zsh](bright-blue)"""
+powershell_indicator = """[pshell](yellow)"""
+style = 'white'
+unknown_indicator = "shell?"
+disabled = false
+
+[username]
+style_user = "green bold"
+style_root = "red bold"
+format = "[$user]($style)"
+disabled = false
+show_always = true
+
+[hostname]
+ssh_only = false
+ssh_symbol = """🌏"""
+style = 'purple bold'
+format = """[$hostname$ssh_symbol]($style)"""
+trim_at = "."
+
+[cmd_duration]
+min_time = 0
+show_milliseconds = true
+disabled = false
+style = "gray dimmed"
+format = "[<$duration>]($style)"
+
+[time]
+disabled = false
+format = '[\[$time\]]($style) '
+style = "fg:bright-black"
+time_format = '%T'
+
+[sudo]
+format = '$symbol ($style)'
+symbol = '🧙'
+style = 'bold blue'
+disabled = false
+
+[directory]
+truncation_length = 2
+truncate_to_repo = true
+truncation_symbol = '.../'
+format = '[$path]($style)[$read_only]($read_only_style)'
+
+[python]
+format = 'via ${symbol}[($virtualenv)]($style) '
+
+[custom.docker-host]
+command = "echo $DOCKER_HOST | cut -d':' -f3"
+when = ''' test "$DOCKER_HOST" != "" '''
+symbol = '🐳'
+format = '@$symbol[:$output]($style)'
+style = 'bright-blue'
