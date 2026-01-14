@@ -2,7 +2,26 @@
 
 mycfg_folder="$HOME/.my-term-cfg"
 
-distro=$(awk -F'=' '/^ID=/ { print tolower($2) }' /etc/*-release | tr -d '"')
+# Parse arguments
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --run-as-distro)
+            distro="$2"
+            shift 2
+            ;;
+        --run-as-distro=*)
+            distro="${1#*=}"
+            shift
+            ;;
+        *)
+            shift
+            ;;
+    esac
+done
+
+if [ -z "$distro" ]; then
+    distro=$(awk -F'=' '/^ID=/ { print tolower($2) }' /etc/*-release | tr -d '"')
+fi
 echo "##### Hmmmmm... seems like you are using '$distro'..."
 case $distro in
     alpine) 
