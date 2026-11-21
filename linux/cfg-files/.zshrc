@@ -17,24 +17,6 @@ source $ZSH/oh-my-zsh.sh
 
 ### customzera
 
-## workaround para o lerdao do wsl2
-# checks to see if we are in a windows or linux dir
-function isWinDir {
-  case $PWD in
-    /mnt/*) return $(true);;
-    *) return $(false);;
-  esac
-}
-# wrap the git command to either run windows git or linux
-function git {
-  if isWinDir
-  then
-    git.exe "$@"
-  else
-    /usr/bin/git "$@"
-  fi
-}
-
 # Start Docker daemon automatically when logging in if not running.
 RUNNING=`ps aux | grep dockerd | grep -v grep`
 if [ -z "$RUNNING" ]; then

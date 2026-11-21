@@ -1,14 +1,14 @@
 # terminal-config
 
-just run (with sudo installed)
+Run the Linux installer (with `sudo` installed):
 ```sh
-sh <OS>/apply-cfg-<OS>.sh
+sh linux/apply-cfg-linux.sh
 chsh -s <your-shell-option> <username>
 ```
 
-run as distro option can be used as:
+You can specify the distribution when needed:
 ```sh
-sh <OS>/apply-cfg-<OS>.sh --run-as-distro <distro>
+sh linux/apply-cfg-linux.sh --run-as-distro <distro>
 ```
 
 try it with a docker container :)
