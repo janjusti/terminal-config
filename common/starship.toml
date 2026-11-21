@@ -1,6 +1,6 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 add_newline = true
-format = """$time$username@${custom.host}${custom.docker-host} $sudo$shell \\[$directory\\] $cmd_duration [$all](dimmed)$character"""
+format = """$time$username@${custom.host}${custom.docker-host} $sudo\\($shell$shlvl\\) \\[$directory\\] $cmd_duration [$all](dimmed)$character"""
 scan_timeout = 20
 command_timeout = 100
 
@@ -8,13 +8,20 @@ command_timeout = 100
 disabled = true
 
 [shell]
-format = """[\\($indicator\\)]($style)"""
+format = '[$indicator]($style)'
 bash_indicator = """[bash](green)"""
 zsh_indicator = """[zsh](bright-blue)"""
 powershell_indicator = """[pshell](yellow)"""
 style = 'white'
 unknown_indicator = "shell?"
 disabled = false
+
+[shlvl]
+disabled = false
+threshold = 2
+symbol = '↕'
+format = '[, $symbol$shlvl]($style)'
+style = 'bold yellow'
 
 [username]
 style_user = "green bold"
