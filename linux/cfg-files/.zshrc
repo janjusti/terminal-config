@@ -1,11 +1,11 @@
 # Path to your oh-my-zsh installation.
 MYCFG_FOLDER="$HOME/.my-term-cfg"
-if [ -f "$MYCFG_FOLDER/update-config.sh" ]; then
+if [ "${TERMINAL_CONFIG_TEST:-0}" != "1" ] && [ -f "$MYCFG_FOLDER/update-config.sh" ]; then
   sh "$MYCFG_FOLDER/update-config.sh"
 fi
 export ZSH="$MYCFG_FOLDER/.oh-my-zsh"
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
-export STARSHIP_CONFIG="$MYCFG_FOLDER/starship.toml"
+export STARSHIP_CONFIG="${STARSHIP_CONFIG:-$MYCFG_FOLDER/starship.toml}"
 
 # Uncomment the following line to enable command auto-correction.
 ENABLE_CORRECTION="true"

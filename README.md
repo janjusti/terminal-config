@@ -24,7 +24,7 @@ The updater replaces repository-managed files in `~/.my-term-cfg` (`.zshrc`,
 `starship.toml`, and `nano/nanorc`). For existing installations, run
 `linux/apply-cfg-linux.sh` once to install the updater.
 
-### Test in a disposable Alpine container
+### Test in an Alpine container
 
 From the repository root, run:
 
@@ -32,5 +32,22 @@ From the repository root, run:
 sh linux/test-in-container.sh
 ```
 
-The script mounts the repository read-only and starts zsh in an ephemeral
-Alpine container. Type `exit` to remove it.
+The default `shell` action creates or reuses a named Alpine container and opens
+zsh in it. The repository is mounted read-only at `/cfg`, so edits on the host
+are immediately visible. The Starship test shell reads
+`/cfg/common/starship.toml` directly, and refreshes the other managed files
+from the mount each time it opens. Package and tool installation happens only
+when the container is first prepared.
+
+```sh
+sh linux/test-in-container.sh start       # prepare without opening zsh
+sh linux/test-in-container.sh shell       # open zsh and use the host's hostname
+sh linux/test-in-container.sh shell host-a # preview with a chosen hostname
+sh linux/test-in-container.sh stop        # stop but keep the container
+sh linux/test-in-container.sh reset       # remove it; next start is fresh
+sh linux/test-in-container.sh once        # one disposable run, as before
+```
+
+The test shell skips the automatic updater so it cannot replace the mounted
+worktree with a downloaded revision. The optional hostname is passed through
+`STARSHIP_TEST_HOSTNAME` and affects only that test session.
