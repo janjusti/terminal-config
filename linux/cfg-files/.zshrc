@@ -18,6 +18,9 @@ ENABLE_CORRECTION="true"
 plugins=(git zsh-autosuggestions)
 source $ZSH/oh-my-zsh.sh
 
+# Do not save commands that start with a space in shell history.
+setopt HIST_IGNORE_SPACE
+
 ### customzera
 
 # Start Docker daemon automatically when logging in if it is installed and not running.
