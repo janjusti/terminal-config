@@ -11,11 +11,26 @@ You can specify the distribution when needed:
 sh linux/apply-cfg-linux.sh --run-as-distro <distro>
 ```
 
-try it with a docker container :)
+### Automatic updates
+
+When zsh starts, the config checks the `main` branch of this repository through
+the GitHub API, at most once every 24 hours. If a newer version is available,
+you can choose whether to install it. Answer `n` to postpone the update for
+seven days; pressing Enter accepts it. Managed files are applied for the next
+terminal session. `curl` and internet access are required; network failures do
+not prevent the shell from starting.
+
+The updater replaces repository-managed files in `~/.my-term-cfg` (`.zshrc`,
+`starship.toml`, and `nano/nanorc`). For existing installations, run
+`linux/apply-cfg-linux.sh` once to install the updater.
+
+### Test in a disposable Alpine container
+
+From the repository root, run:
+
 ```sh
-docker run --rm -it --name=alpine-test -h=Alpinezera -v $PWD:/cfg alpine:3.17.2 sh -c "apk update; apk add sudo; adduser -S $USER; echo '$USER ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$USER; chmod 0440 /etc/sudoers.d/$USER; cd /cfg/linux; sudo -u $USER sh apply-cfg-linux.sh"
+sh linux/test-in-container.sh
 ```
-or 
-```sh
-docker run --rm -it --name=debian-test -h=Debianzera -v $PWD:/cfg debian:stable-slim sh -c "apt update; apt install sudo; adduser --system $USER; echo '$USER ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/$USER; chmod 0440 /etc/sudoers.d/$USER; cd /cfg/linux; sudo -u $USER sh apply-cfg-linux.sh"
-```
+
+The script mounts the repository read-only and starts zsh in an ephemeral
+Alpine container. Type `exit` to remove it.

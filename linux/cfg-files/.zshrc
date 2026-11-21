@@ -1,5 +1,8 @@
 # Path to your oh-my-zsh installation.
 MYCFG_FOLDER="$HOME/.my-term-cfg"
+if [ -f "$MYCFG_FOLDER/update-config.sh" ]; then
+  sh "$MYCFG_FOLDER/update-config.sh"
+fi
 export ZSH="$MYCFG_FOLDER/.oh-my-zsh"
 export ZSH_COMPDUMP=$ZSH/cache/.zcompdump-$HOST
 export STARSHIP_CONFIG="$MYCFG_FOLDER/starship.toml"
@@ -17,10 +20,12 @@ source $ZSH/oh-my-zsh.sh
 
 ### customzera
 
-# Start Docker daemon automatically when logging in if not running.
-RUNNING=`ps aux | grep dockerd | grep -v grep`
-if [ -z "$RUNNING" ]; then
-    (sudo dockerd > /dev/null 2>&1 &)
+# Start Docker daemon automatically when logging in if it is installed and not running.
+if command -v dockerd >/dev/null 2>&1 && command -v ps >/dev/null 2>&1; then
+    RUNNING=$(ps aux | grep '[d]ockerd' || true)
+    if [ -z "$RUNNING" ]; then
+        (sudo dockerd > /dev/null 2>&1 &)
+    fi
 fi
 
 alias py="python3"
