@@ -24,6 +24,15 @@ The updater replaces repository-managed files in `~/.my-term-cfg` (`.zshrc`,
 `starship.toml`, and `nano/nanorc`). For existing installations, run
 `linux/apply-cfg-linux.sh` once to install the updater.
 
+To check for updates immediately, bypassing the daily interval and any snooze:
+
+```sh
+sh "$HOME/.my-term-cfg/update-config.sh" --force
+```
+
+The updater still asks before installing a newer revision and does nothing if
+the installed revision is already current.
+
 ### Test in an Alpine container
 
 From the repository root, run:

@@ -9,6 +9,19 @@ check_interval=86400
 snooze_interval=604800
 repo="janjusti/terminal-config"
 branch="main"
+force_update=0
+
+case "$#:${1:-}" in
+    0:)
+        ;;
+    1:--force)
+        force_update=1
+        ;;
+    *)
+        printf 'Usage: %s [--force]\n' "$0" >&2
+        exit 2
+        ;;
+esac
 
 save_state() {
     saved_sha=$1
@@ -50,14 +63,16 @@ case "$deferred_until" in
     ''|*[!0-9]*) deferred_until=0 ;;
 esac
 
-if [ "$now" -gt 0 ] && [ "$deferred_until" -gt "$now" ]; then
-    exit 0
-fi
+if [ "$force_update" -eq 0 ]; then
+    if [ "$now" -gt 0 ] && [ "$deferred_until" -gt "$now" ]; then
+        exit 0
+    fi
 
-if [ "$now" -gt 0 ] && [ "$last_checked" -gt 0 ] &&
-   [ "$now" -ge "$last_checked" ] &&
-   [ "$((now - last_checked))" -lt "$check_interval" ]; then
-    exit 0
+    if [ "$now" -gt 0 ] && [ "$last_checked" -gt 0 ] &&
+       [ "$now" -ge "$last_checked" ] &&
+       [ "$((now - last_checked))" -lt "$check_interval" ]; then
+        exit 0
+    fi
 fi
 
 api_url="https://api.github.com/repos/$repo/commits/$branch"
