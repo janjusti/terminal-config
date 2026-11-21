@@ -34,7 +34,7 @@ if [ -z "$distro" ]; then
 fi
 echo "##### Hmmmmm... seems like you are using '$distro'..."
 case $distro in
-    alpine|ubuntu|debian|rhel) ;;
+    alpine|ubuntu|debian|linuxmint|rhel) ;;
     *) 
         echo "##### Unsupported distribution '$distro'. Update this script with the correct package manager." >&2
         exit 1
@@ -54,7 +54,7 @@ if [ -n "$packages_to_install" ]; then
         alpine)
             sudo apk add --no-cache "$@"
             ;;
-        ubuntu|debian)
+        ubuntu|debian|linuxmint)
             sudo apt-get update
             sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y "$@"
             ;;
