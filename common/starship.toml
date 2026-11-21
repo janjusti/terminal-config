@@ -7,6 +7,9 @@ command_timeout = 100
 [container]
 disabled = true
 
+[hostname]
+disabled = true
+
 [shell]
 format = '[$indicator]($style)'
 bash_indicator = """[bash](green)"""
