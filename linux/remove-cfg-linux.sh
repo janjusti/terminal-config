@@ -1,6 +1,13 @@
 #!/bin/sh
 
-mycfg_folder="$HOME/.my-term-cfg"
+set -e
+
+path_to_script_folder=$(dirname "$(realpath "$0")")
+. "$path_to_script_folder/zshrc-hook.sh"
+
+config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
+mycfg_folder="$config_home/terminal-config"
+legacy_cfg_folder="$HOME/.my-term-cfg"
 
 # Parse arguments
 while [ $# -gt 0 ]; do
@@ -38,9 +45,8 @@ case $distro in
 esac
 
 echo "Removing config files..."
-rm -rf $mycfg_folder $HOME/.cache/starship;
-rm -f $HOME/.zshrc;
-[ -f $HOME/.zshrc.old ] && (echo "Restoring .zshrc file..." && mv $HOME/.zshrc.old $HOME/.zshrc);
+tc_remove_zshrc_hook "$mycfg_folder" "$legacy_cfg_folder"
+rm -rf "$mycfg_folder" "$legacy_cfg_folder" "$HOME/.cache/starship"
 # echo "Uninstalling apps..."
 # $uninstall_cmd git zsh curl;
 # [ -f /usr/local/bin/starship ] && (echo "Uninstalling starship..." && rm -f /usr/local/bin/starship);

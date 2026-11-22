@@ -20,14 +20,10 @@ seven days; pressing Enter accepts it. Managed files are applied for the next
 terminal session. `curl` and internet access are required; network failures do
 not prevent the shell from starting.
 
-The updater replaces repository-managed files in `~/.my-term-cfg` (`.zshrc`,
-`starship.toml`, and `nano/nanorc`). For existing installations, run
-`linux/apply-cfg-linux.sh` once to install the updater.
-
 To check for updates immediately, bypassing the daily interval and any snooze:
 
 ```sh
-sh "$HOME/.my-term-cfg/update-config.sh" --force
+sh "${XDG_CONFIG_HOME:-$HOME/.config}/terminal-config/update-config.sh" --force
 ```
 
 The updater still asks before installing a newer revision and does nothing if

@@ -1,9 +1,10 @@
 #!/bin/sh
 
 # Check for a new config revision at most once per day, then update the
-# Linux config files installed under ~/.my-term-cfg.
+# Linux config files installed under ${XDG_CONFIG_HOME:-~/.config}/terminal-config.
 
-cfg_folder=${MYCFG_FOLDER:-"$HOME/.my-term-cfg"}
+config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
+cfg_folder=${MYCFG_FOLDER:-"$config_home/terminal-config"}
 state_file="$cfg_folder/.update-state"
 check_interval=86400
 snooze_interval=604800

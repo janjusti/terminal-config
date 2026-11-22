@@ -1,5 +1,6 @@
 # Path to your oh-my-zsh installation.
-MYCFG_FOLDER="$HOME/.my-term-cfg"
+export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"
+export MYCFG_FOLDER="${MYCFG_FOLDER:-$XDG_CONFIG_HOME/terminal-config}"
 if [ "${TERMINAL_CONFIG_TEST:-0}" != "1" ] && [ -f "$MYCFG_FOLDER/update-config.sh" ]; then
   sh "$MYCFG_FOLDER/update-config.sh"
 fi

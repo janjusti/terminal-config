@@ -9,8 +9,14 @@ fi
 
 echo "Hello there! Welcome."
 
-mycfg_folder="$HOME/.my-term-cfg"
-export XDG_CONFIG_HOME="$mycfg_folder"
+path_to_script_folder=$(dirname "$(realpath "$0")")
+. "$path_to_script_folder/zshrc-hook.sh"
+
+config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
+export XDG_CONFIG_HOME="$config_home"
+mycfg_folder="$config_home/terminal-config"
+legacy_cfg_folder="$HOME/.my-term-cfg"
+export MYCFG_FOLDER="$mycfg_folder"
 
 # Parse arguments
 while [ $# -gt 0 ]; do
@@ -64,12 +70,15 @@ if [ -n "$packages_to_install" ]; then
     esac
 fi
 
-if [ -f "$HOME/.zshrc" ]; then
-    echo "##### Backing up config files..."
-    mv "$HOME/.zshrc" "$HOME/.zshrc.old"
-fi
-
 echo "##### Creating folder for config files..."
+mkdir -p "$config_home"
+if [ -d "$legacy_cfg_folder" ] && [ ! -e "$mycfg_folder" ]; then
+    echo "##### Migrating config files from '$legacy_cfg_folder'..."
+    cp -a "$legacy_cfg_folder" "$mycfg_folder"
+    echo "##### Keeping '$legacy_cfg_folder' as a rollback copy."
+elif [ -d "$legacy_cfg_folder" ] && [ -e "$mycfg_folder" ]; then
+    echo "##### Keeping the existing config in '$mycfg_folder'; legacy files remain in '$legacy_cfg_folder'."
+fi
 mkdir -p "$mycfg_folder"
 
 install_tmp=$(mktemp -d "${TMPDIR:-/tmp}/terminal-config-install.XXXXXX")
@@ -88,7 +97,6 @@ if [ ! -d "$mycfg_folder/.oh-my-zsh" ]; then
 fi
 
 echo "##### Copying config files to '$mycfg_folder'..."
-path_to_script_folder=$(dirname "$(realpath "$0")")
 cp -r "$path_to_script_folder/cfg-files/." "$mycfg_folder/"
 cp -r "$path_to_script_folder/../common/." "$mycfg_folder/"
 cp "$path_to_script_folder/update-config.sh" "$mycfg_folder/update-config.sh"
@@ -96,8 +104,8 @@ local_cfg_revision=$(git -C "$path_to_script_folder/.." rev-parse HEAD 2>/dev/nu
 if [ -n "$local_cfg_revision" ]; then
     printf '%s\n' "$local_cfg_revision" > "$mycfg_folder/.update-state"
 fi
-echo "##### Creating new .zshrc file..."
-echo "source $mycfg_folder/.zshrc" > "$HOME/.zshrc"
+echo "##### Connecting terminal-config to the existing .zshrc..."
+tc_install_zshrc_hook "$mycfg_folder" "$legacy_cfg_folder"
 
 plugins_folder="$mycfg_folder/.oh-my-zsh/custom/plugins"
 if [ ! -d "$plugins_folder/zsh-autosuggestions" ]; then
