@@ -39,10 +39,11 @@ sh linux/test-in-container.sh
 
 The default `shell` action creates or reuses a named Alpine container and opens
 zsh in it. The repository is mounted read-only at `/cfg`, so edits on the host
-are immediately visible. The Starship test shell reads
-`/cfg/common/starship.toml` directly, and refreshes the other managed files
-from the mount each time it opens. Package and tool installation happens only
-when the container is first prepared.
+are immediately visible. The shell reads its Starship configuration from
+`/cfg/common/starship.toml` and creates a writable rendered copy for the
+host-specific color. It refreshes the other managed files from the mount each
+time it opens. Package and tool installation happens only when the container
+is first prepared.
 
 ```sh
 sh linux/test-in-container.sh start       # prepare without opening zsh
@@ -55,4 +56,5 @@ sh linux/test-in-container.sh once        # one disposable run, as before
 
 The test shell skips the automatic updater so it cannot replace the mounted
 worktree with a downloaded revision. The optional hostname is passed through
-`STARSHIP_TEST_HOSTNAME` and affects only that test session.
+`STARSHIP_TEST_HOSTNAME` and determines the hostname color for that test
+session.

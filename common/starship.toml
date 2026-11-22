@@ -68,25 +68,19 @@ symbol = '🐳'
 format = '@$symbol[:$output]($style)'
 style = 'bright-blue'
 
-# Starship's built-in hostname module only supports a fixed style. This custom
-# module derives a stable 256-color value from the displayed (short) hostname.
+# The zsh startup hook assigns this module a stable color for the local host.
 [custom.host]
 command = '''
 host=${STARSHIP_TEST_HOSTNAME:-$(hostname)}
 host=${host%%.*}
-host=$(printf '%s' "$host" | LC_ALL=C tr -cd '[:alnum:]_.-')
 [ -n "$host" ] || host=unknown
-checksum=$(printf '%s' "$host" | cksum)
-checksum=${checksum%% *}
-color=$((16 + 36 * (1 + checksum % 5) + 6 * (1 + (checksum / 5) % 5) + (1 + (checksum / 25) % 5)))
 ssh_symbol=
 if [ -n "${SSH_CONNECTION:-}${SSH_CLIENT:-}${SSH_TTY:-}" ]; then
     ssh_symbol='🌏'
 fi
-printf '%%{\033[1;38;5;%sm%%}%s%%{\033[0m%%}' "$color" "$host$ssh_symbol"
+printf '%s' "$host$ssh_symbol"
 '''
 when = true
 shell = ['sh']
-unsafe_no_escape = true
-format = '$output'
-style = ''
+format = '[$output]($style)'
+style = 'bold fg:160' # HOST_COLOR
