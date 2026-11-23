@@ -31,7 +31,39 @@ tc_install_zshrc_hook() {
         }
     fi
 
-    if ! grep -Fqx "$marker_start" "$hook_tmp" 2>/dev/null; then
+    if grep -Fqx "$marker_start" "$hook_tmp" 2>/dev/null &&
+       grep -Fqx "$marker_end" "$hook_tmp" 2>/dev/null; then
+        transformed_tmp=$(mktemp "$HOME/.zshrc.terminal-config.XXXXXX") || {
+            rm -f "$hook_tmp"
+            return 1
+        }
+        cp -p "$hook_tmp" "$transformed_tmp" || {
+            rm -f "$hook_tmp" "$transformed_tmp"
+            return 1
+        }
+        awk \
+            -v start="$marker_start" \
+            -v finish="$marker_end" \
+            '
+                $0 == start {
+                    print
+                    print "export MYCFG_FOLDER=\"${MYCFG_FOLDER:-${XDG_CONFIG_HOME:-$HOME/.config}/terminal-config}\""
+                    print "if [ -r \"$MYCFG_FOLDER/.zshrc\" ]; then source \"$MYCFG_FOLDER/.zshrc\"; fi"
+                    inside = 1
+                    next
+                }
+                $0 == finish {
+                    if (inside) {
+                        print
+                        inside = 0
+                        next
+                    }
+                }
+                inside { next }
+                { print }
+            ' "$hook_tmp" > "$transformed_tmp"
+        mv "$transformed_tmp" "$hook_tmp"
+    elif ! grep -Fqx "$marker_start" "$hook_tmp" 2>/dev/null; then
         if grep -Fqx "$legacy_source" "$hook_tmp" 2>/dev/null ||
            grep -Fqx "$current_source" "$hook_tmp" 2>/dev/null; then
             transformed_tmp=$(mktemp "$HOME/.zshrc.terminal-config.XXXXXX") || {
@@ -51,8 +83,7 @@ tc_install_zshrc_hook() {
                     $0 == legacy || $0 == current {
                         if (!inserted) {
                             print start
-                            print "export XDG_CONFIG_HOME=\"${XDG_CONFIG_HOME:-$HOME/.config}\""
-                            print "export MYCFG_FOLDER=\"$XDG_CONFIG_HOME/terminal-config\""
+                            print "export MYCFG_FOLDER=\"${MYCFG_FOLDER:-${XDG_CONFIG_HOME:-$HOME/.config}/terminal-config}\""
                             print "if [ -r \"$MYCFG_FOLDER/.zshrc\" ]; then source \"$MYCFG_FOLDER/.zshrc\"; fi"
                             print finish
                             inserted = 1
@@ -73,8 +104,7 @@ tc_install_zshrc_hook() {
             }
             {
                 printf '\n%s\n' "$marker_start"
-                printf '%s\n' 'export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}"'
-                printf '%s\n' 'export MYCFG_FOLDER="$XDG_CONFIG_HOME/terminal-config"'
+                printf '%s\n' 'export MYCFG_FOLDER="${MYCFG_FOLDER:-${XDG_CONFIG_HOME:-$HOME/.config}/terminal-config}"'
                 printf '%s\n' 'if [ -r "$MYCFG_FOLDER/.zshrc" ]; then source "$MYCFG_FOLDER/.zshrc"; fi'
                 printf '%s\n' "$marker_end"
                 printf '\n'

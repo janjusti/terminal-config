@@ -13,7 +13,6 @@ path_to_script_folder=$(dirname "$(realpath "$0")")
 . "$path_to_script_folder/zshrc-hook.sh"
 
 config_home=${XDG_CONFIG_HOME:-"$HOME/.config"}
-export XDG_CONFIG_HOME="$config_home"
 mycfg_folder="$config_home/terminal-config"
 legacy_cfg_folder="$HOME/.my-term-cfg"
 export MYCFG_FOLDER="$mycfg_folder"
