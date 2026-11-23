@@ -1,6 +1,16 @@
 # Python
 alias py='python3'
 
+# Stage the worktree and commit with the supplied message. Quote multiline messages.
+gac() {
+  if (( $# == 0 )); then
+    print -u2 -- 'Uso: gac "mensagem do commit"'
+    return 2
+  fi
+
+  command git add . && command git commit -m "$*"
+}
+
 # Kubernetes
 alias k='kubectl'
 
