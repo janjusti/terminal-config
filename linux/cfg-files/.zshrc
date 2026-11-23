@@ -16,7 +16,11 @@ ENABLE_CORRECTION="true"
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git zsh-autosuggestions aliases)
-source $ZSH/oh-my-zsh.sh
+if [ -r "$ZSH/oh-my-zsh.sh" ]; then
+  source "$ZSH/oh-my-zsh.sh"
+else
+  printf 'terminal-config: Oh My Zsh is missing at %s; rerun linux/apply-cfg-linux.sh from the terminal-config repository.\n' "$ZSH" >&2
+fi
 
 # Keep personal aliases available to Oh My Zsh's `als` alias browser.
 if [ -r "$MYCFG_FOLDER/aliases.zsh" ]; then

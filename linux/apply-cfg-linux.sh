@@ -89,10 +89,41 @@ if ! command -v starship >/dev/null 2>&1; then
     sh "$install_tmp/starship-install.sh" -f
 fi
 
-if [ ! -d "$mycfg_folder/.oh-my-zsh" ]; then
-    echo "##### Installing oh-my-zsh..."
+ohmyzsh_folder="$mycfg_folder/.oh-my-zsh"
+if [ ! -f "$ohmyzsh_folder/oh-my-zsh.sh" ]; then
+    if [ -d "$ohmyzsh_folder" ]; then
+        echo "##### Repairing incomplete oh-my-zsh installation..."
+    else
+        echo "##### Installing oh-my-zsh..."
+    fi
     curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -o "$install_tmp/oh-my-zsh-install.sh"
-    env ZSH="$mycfg_folder/.oh-my-zsh" sh "$install_tmp/oh-my-zsh-install.sh" --unattended
+    omz_stage="$install_tmp/oh-my-zsh"
+    env ZSH="$omz_stage" ZDOTDIR="$install_tmp/zsh-home" KEEP_ZSHRC=yes \
+        sh "$install_tmp/oh-my-zsh-install.sh" --unattended
+
+    if [ -d "$ohmyzsh_folder/custom" ]; then
+        cp -a "$ohmyzsh_folder/custom" "$install_tmp/oh-my-zsh-custom"
+    fi
+    if [ -d "$ohmyzsh_folder" ]; then
+        for omz_item in "$omz_stage"/* "$omz_stage"/.[!.]* "$omz_stage"/..?*; do
+            [ -e "$omz_item" ] || continue
+            [ "${omz_item##*/}" = .git ] && continue
+            cp -a "$omz_item" "$ohmyzsh_folder/"
+        done
+        if [ ! -e "$ohmyzsh_folder/.git" ]; then
+            cp -a "$omz_stage/.git" "$ohmyzsh_folder/.git"
+        fi
+    else
+        mv "$omz_stage" "$ohmyzsh_folder"
+    fi
+    if [ -d "$install_tmp/oh-my-zsh-custom" ]; then
+        mkdir -p "$ohmyzsh_folder/custom"
+        cp -a "$install_tmp/oh-my-zsh-custom/." "$ohmyzsh_folder/custom/"
+    fi
+    if [ ! -f "$ohmyzsh_folder/oh-my-zsh.sh" ]; then
+        echo "Oh My Zsh installation is incomplete: $ohmyzsh_folder/oh-my-zsh.sh was not created." >&2
+        exit 1
+    fi
 fi
 
 echo "##### Copying config files to '$mycfg_folder'..."
