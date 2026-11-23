@@ -48,7 +48,7 @@ case $distro in
 esac
 
 packages_to_install=""
-for package in curl zsh git; do
+for package in curl zsh git python3; do
     if ! command -v "$package" >/dev/null 2>&1; then
         packages_to_install="$packages_to_install $package"
     fi

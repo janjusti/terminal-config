@@ -16,8 +16,13 @@ ENABLE_CORRECTION="true"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-autosuggestions)
+plugins=(git zsh-autosuggestions aliases)
 source $ZSH/oh-my-zsh.sh
+
+# Keep personal aliases available to Oh My Zsh's `als` alias browser.
+if [ -r "$MYCFG_FOLDER/aliases.zsh" ]; then
+  source "$MYCFG_FOLDER/aliases.zsh"
+fi
 
 # Do not save commands that start with a space in shell history.
 setopt HIST_IGNORE_SPACE
@@ -32,8 +37,6 @@ if command -v dockerd >/dev/null 2>&1 && command -v ps >/dev/null 2>&1; then
     fi
 fi
 
-alias py="python3"
-alias k="kubectl"
 export TZ=America/Fortaleza
 
 eval "$(starship init zsh)"
