@@ -125,7 +125,7 @@ if ! tar -xzf "$archive" -C "$tmp_dir" 2>/dev/null; then
 fi
 
 repo_dir="$tmp_dir/terminal-config-$remote_sha"
-files='linux/cfg-files/.zshrc'
+files='linux/cfg-files/.zshrc linux/cfg-files/aliases.zsh'
 
 # Stage every managed file before replacing any installed config.
 mkdir -p "$tmp_dir/next/common/nano" || {
