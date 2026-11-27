@@ -14,6 +14,59 @@ gac() {
 # Kubernetes
 alias k='kubectl'
 
+# Recreate the current Compose project with down -t 0 and up -d.
+# dcr                         # entire project, in the background
+# dcr tests web               # selected services (and their dependencies)
+# dcr -f tests                # run up in the foreground
+# dcr --build tests           # build images before starting
+# dcr --profile dev -f        # use a Compose profile
+# dcr --file compose.dev.yml  # use an alternative Compose file
+# ENABLE_MOCK=0 dcr -f        # set an environment variable for both commands
+# --file and --profile can be repeated; -- ends option parsing.
+# Up runs only if down succeeds. Named volumes are not removed.
+dcr() {
+  local foreground=0 build=0
+  local -a compose_options services up_options
+
+  while (( $# )); do
+    case "$1" in
+      -f|--foreground) foreground=1 ;;
+      -b|--build) build=1 ;;
+      --file|--profile)
+        if (( $# < 2 )) || [[ -z "$2" || "$2" == -* ]]; then
+          print -u2 -- "dcr: $1 requires a value"
+          return 2
+        fi
+        compose_options+=("$1" "$2")
+        shift
+        ;;
+      --file=*|--profile=*)
+        if [[ -z "${1#*=}" ]]; then
+          print -u2 -- "dcr: ${1%%=*} requires a value"
+          return 2
+        fi
+        compose_options+=("$1")
+        ;;
+      --)
+        shift
+        services+=("$@")
+        break
+        ;;
+      -*)
+        print -u2 -- "dcr: unknown option: $1"
+        return 2
+        ;;
+      *) services+=("$1") ;;
+    esac
+    shift
+  done
+
+  (( foreground )) || up_options+=(-d)
+  (( build )) && up_options+=(--build)
+  command docker compose "${compose_options[@]}" down -t 0 "${services[@]}" &&
+    command docker compose "${compose_options[@]}" up "${up_options[@]}" "${services[@]}"
+}
+
 # Run NVM-managed tools on demand without adding Node/npm to the startup PATH.
 nvmrun() {
   local nvm_dir="${NVM_DIR:-$HOME/.nvm}"
